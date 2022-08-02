@@ -5,6 +5,7 @@ io:
       clientId: jwt-assertion-test-client
       clientSecret: 6sND1PNej4ah58PRQFq18xlElfxgNTIuHojYf8mLNgjfPa5DRk9P5fTQjSiBJypg
       grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
+      client-assertion-type: urn:ietf:params:oauth:client-assertion-type:jwt-bearer
       jwt:
         keystore-path: src/main/resources/demo-client.p12
         keystore-password: Secr3t

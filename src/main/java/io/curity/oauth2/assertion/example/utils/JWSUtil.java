@@ -56,7 +56,27 @@ public class JWSUtil {
 
         // Sign and encode the JWT
         String jws = JWT.getEncoder().encode(jwt, signer);
-        logger.info("User assertion JWT sent to the Server: {}", jws);
+        logger.info("User assertion JWT sent to the Server for user authentication: {}", jws);
         return jws;
     }
+
+    public String generateClientAssertionJWS(String clientId, String audience) throws UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, IOException {
+        // Create a signer using the custom RSA private key
+        Signer signer = RSASigner.newSHA256Signer(keyUtil.getPrivateKey());
+
+        // Create a new JWT as per the specification https://datatracker.ietf.org/doc/html/rfc7523#section-2.2
+        JWT jwt = new JWT()
+                .setIssuer(clientId)
+                .setIssuedAt(ZonedDateTime.now(ZoneOffset.UTC))
+                .setSubject(clientId)
+                .setExpiration(ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(5)).setUniqueId(UUID.randomUUID().toString())
+                .setNotBefore(ZonedDateTime.now(ZoneOffset.UTC))
+                .setAudience(audience);
+
+        // Sign and encode the JWT
+        String jws = JWT.getEncoder().encode(jwt, signer);
+        logger.info("Client assertion JWT sent to the Server for client authentication: {}", jws);
+        return jws;
+    }
+
 }

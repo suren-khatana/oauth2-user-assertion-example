@@ -45,6 +45,9 @@ public class OAuthClient {
     @Value("${io.curity.oauth2.grant-type}")
     private String grantType;
 
+    @Value("${io.curity.oauth2.client-assertion-type}")
+    private String clientAssertionType;
+
     @Autowired
     public OAuthClient(RestTemplateBuilder restTemplateBuilder, JWSUtil jwsUtil) {
         this.restTemplate = restTemplateBuilder.build();
@@ -75,10 +78,11 @@ public class OAuthClient {
         headers.set("Content-type", "application/x-www-form-urlencoded");
         MultiValueMap<String, String> reqBody = new LinkedMultiValueMap<>();
         reqBody.add("client_id", this.clientId);
-        reqBody.add("client_secret",this.clientSecret);
         reqBody.add("scope","email");
-        reqBody.add("assertion", jwsUtil.generateUserAssertionJWS(this.clientId, this.issuer));
+        reqBody.add("assertion", jwsUtil.generateUserAssertionJWS(this.clientId, this.issuer)); // for user authentication
         reqBody.add("grant_type", this.grantType);
+        reqBody.add("client_assertion_type", this.clientAssertionType );
+        reqBody.add("client_assertion", jwsUtil.generateClientAssertionJWS(this.clientId, this.issuer)); // for client authentication
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(reqBody, headers);
         ResponseEntity<AccessTokenResponse> response = restTemplate.postForEntity(getTokenEndPoint(), request, AccessTokenResponse.class);
         return response.getBody();
