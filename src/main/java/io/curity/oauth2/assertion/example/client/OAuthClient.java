@@ -77,7 +77,6 @@ public class OAuthClient {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-type", "application/x-www-form-urlencoded");
         MultiValueMap<String, String> reqBody = new LinkedMultiValueMap<>();
-        reqBody.add("client_id", this.clientId);
         reqBody.add("scope","email");
         reqBody.add("assertion", jwsUtil.generateUserAssertionJWS(this.clientId, this.issuer)); // for user authentication
         reqBody.add("grant_type", this.grantType);
